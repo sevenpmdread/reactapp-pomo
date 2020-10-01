@@ -2,6 +2,8 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
@@ -9,12 +11,14 @@
       name="description"
       content="Web site created using create-react-app"
     />
+
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <!--
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
     -->
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.12.11/paper-full.min.js" integrity="sha512-ehNJ9gpOQJn8EYlA3P1zUtfrh97G/6WNsjfPfpnMxbo6PX6UXHRj8Ny5MCd36w2eTPlvOSVuXLZmY+/VLVhI4A==" crossorigin="anonymous"></script>
     <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
@@ -25,19 +29,71 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>React App</title>
+    <script type="text/paperscript" canvas="myCanvas">
+     //  The amount of circles we want to make:
+      var count = Math.floor(Math.random()*500);
+      
+      // Create a symbol, which we will use to place instances of later:
+      var path = new Path.Circle({
+        center: [0, 0],
+        radius: 4,
+        fillColor: '#90460fe6',
+        strokeColor: 'white'
+      });
+      
+      var symbol = new Symbol(path);
+      
+      // Place the instances of the symbol:
+      for (var i = 0; i < count; i++) {
+        // The center position is a random point in the view:
+        var center = Point.random() * view.size;
+        var placedSymbol = symbol.place(center);
+        placedSymbol.scale(i / count);
+      }
+      
+      // The onFrame function is called up to 60 times a second:
+      function onFrame(event) {
+        // Run through the active layer's children list and change
+        // the position of the placed symbols:
+        for (var i = 0; i < count; i++) {
+          var item = project.activeLayer.children[i];
+          
+          // Move the item 1/20th of its width to the right. This way
+          // larger circles move faster than smaller circles:
+          item.position.x += item.bounds.width / 20;
+      
+          // If the item has left the view on the right, move it back
+          // to the left:
+          if (item.bounds.left > view.size.width) {
+            item.position.x = -item.bounds.width;
+          }
+        }
+      }
+      function getRandomColor() {
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+          color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+      }
+      
+      </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
+  
     <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
+   
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+   
+<!-- partial:index.partial.html -->
+<!-- particles.js container --> <div id="particles-js"></div> <!-- stats - count particles --> 
+ <!-- particles.js lib - https://github.com/VincentGarreau/particles.js --> 
+  <script src="http://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script> <!-- stats.js lib --> <
+    script src="http://threejs.org/examples/js/libs/stats.min.js"></script>
+<!-- partial -->
+  <script  src="./script.js"></script>
 
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
   </body>
 </html>
